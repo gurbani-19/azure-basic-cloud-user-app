@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Gurbani's Cloud Server</title>
+
+  <style>
+    body {
+      background: black;
+      color: #00ffe1;
+      font-family: monospace;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 40px;
+      text-shadow: 0 0 20px #00ffe1;
+    }
+
+    .card {
+      border: 1px solid #00ffe1;
+      padding: 20px;
+      margin: 20px auto;
+      width: 300px;
+      box-shadow: 0 0 20px #00ffe1;
+      border-radius: 10px;
+    }
+
+    button {
+      background: black;
+      color: #00ffe1;
+      border: 1px solid #00ffe1;
+      padding: 10px;
+      cursor: pointer;
+    }
+
+    input {
+      padding: 8px;
+    }
+  </style>
+</head>
+
+<body>
+
+<h1>Gurbani's Cloud Server</h1>
+<p>Live from Azure VM!!</p>
+
+<div class="card">
+  <h3>Backend Response:</h3>
+  <p id="api-data">Loading...</p>
+  <button onclick="getData()">Fetch Again</button>
+</div>
+
+<br>
+
+<input id="username" placeholder="Enter name">
+<button onclick="addUser()">Add User</button>
+
+<h3>Users:</h3>
+<ul id="users"></ul>
+
+<button onclick="loadUsers()">Load Users</button>
+
+<script>
+
+// 🔹 API check
+function getData() {
+  document.getElementById('api-data').innerText = "Loading...";
+
+  fetch('/api')
+    .then(res => res.text())
+    .then(data => {
+      document.getElementById('api-data').innerText = data;
+    })
+    .catch(() => {
+      document.getElementById('api-data').innerText = "API error";
+    });
+}
+// 🔹 Load users
+function loadUsers() {
+  fetch('/api/users')
+    .then(res => res.json())
+    .then(data => {
+      let list = data.map(u => `<li>${u.name}</li>`).join('');
+      document.getElementById('users').innerHTML = list;
+    })
+    .catch(() => {
+      document.getElementById('users').innerHTML = "<li>Error loading users</li>";
+    });
+}
+
+// 🔹 Add user
+function addUser() {
+  const name = document.getElementById('username').value;
+
+  if (!name.trim()) return;
+
+  fetch('/api/users', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ name })
+  })
+  .then(() => {
+    document.getElementById('username').value = '';
+    loadUsers();
+  })
+  .catch(() => {
+    alert("Error adding user");
+  });
+}
+
+// auto load
+getData();
+loadUsers();
+
+</script>
+
+</body>
+</html>
