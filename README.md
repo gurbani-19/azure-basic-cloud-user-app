@@ -32,7 +32,7 @@ Frontend → Backend API → Database
 
 ## 📸 Demo
 
-_Add screenshots here_
+![Cloud App UI](screenshots/ui-users.jpeg)
 
 ---
 
